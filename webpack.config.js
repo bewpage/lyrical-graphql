@@ -9,20 +9,24 @@ module.exports = {
   },
   module: {
     rules: [
-      {
-        use: 'babel-loader',
-        test: /\.js$/,
-        exclude: /node_modules/
-      },
+        {
+          use: 'babel-loader',
+            test: /\.(js|jsx)$/,
+            exclude: /node_modules/
+        },
       {
         use: ['style-loader', 'css-loader'],
         test: /\.css$/
       }
     ]
   },
-  plugins: [
+    resolve: {
+        extensions: ['.js', '.jsx']
+    },
+    plugins: [
     new HtmlWebpackPlugin({
       template: 'client/public/index.html'
     })
-  ]
+  ],
+    mode: 'none'
 };

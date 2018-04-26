@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
+import SongList from "./SongList";
+
 import './App.css';
+
 
 class App extends Component {
   render() {
     return (
-      <div className='app'>
-          <h1>
-              Hello React
-          </h1>
+      <div className='container'>
+          <SongList/>
       </div>
     );
   }
