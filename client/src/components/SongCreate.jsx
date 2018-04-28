@@ -1,14 +1,17 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import { graphql } from 'react-apollo';
+import query from '../queries/fetchSongs';
+import addSong from '../queries/addSong';
 
 class SongCreate extends Component{
     constructor(props){
         super(props);
         this.state = {
             title: '',
+            formErrors: {title: ''},
             formValid: false,
             titleValid: false,
-            formErrors: {title: ''}
         }
     }
 
@@ -35,7 +38,7 @@ class SongCreate extends Component{
 
         this.setState({
             formErrors: fieldValidationErrors,
-            titleValid
+            titleValid,
         }, this.validateForm);
     }
 
@@ -45,18 +48,23 @@ class SongCreate extends Component{
         })
     }
 
-    newSongTitleSubmit = (event) => {
+    newSongTitleSubmit = async (event) => {
         event.preventDefault();
         console.log('new title is:', this.state.title);
-
-
-        this.setState({
-            title: ''
+        const { title } = this.state;
+        await this.props.mutate({
+            variables: {
+                title
+            },
+            refetchQueries: [{ query }]
         })
+            .then(() => {this.props.history.push(`/`)});
+        // this.props.history.push(`/`);
     };
 
 
     render(){
+        console.log('this.props', this.props);
         return(
             <div className='container'>
                 <h3>Create a new song</h3>
@@ -75,7 +83,7 @@ class SongCreate extends Component{
                                 name="action"
                                 disabled={!this.state.formValid}
                             >
-                                Submit
+                                Add Song
                             </button>
                         </form>
                     </div>
@@ -86,7 +94,7 @@ class SongCreate extends Component{
                               to='/'
                         >
                             <i className="material-icons left">arrow_back</i>
-                            Song List
+                            Back
                         </Link>
                     </div>
                 </div>
@@ -95,4 +103,5 @@ class SongCreate extends Component{
     }
 }
 
-export default SongCreate;
+
+export default graphql(addSong)(SongCreate);

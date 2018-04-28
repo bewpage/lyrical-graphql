@@ -1,59 +1,59 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { Query, graphql } from 'react-apollo';
-import gql from 'graphql-tag';
+import { compose, graphql } from 'react-apollo';
 import { isEmpty } from 'lodash';
+import query from '../queries/fetchSongs';
+import deleteSong from '../queries/deleteSong';
+
 
 class SongList extends Component{
 
-    // songList(){
-    //     return(
-    //         <Query
-    //             // pollInterval={5000}
-    //             query={gql`
-    //             {
-    //                 songs{
-    //                     title
-    //                     id
-    //                 }
-    //             }`}
-    //         >
-    //             {({loading, error, data}) => {
-    //                 if (loading) return <p>Loading....</p>;
-    //                 if (error) return <p>Error :(</p>;
-    //
-    //                 return data.songs.map(({title, id}) => {
-    //                     return (
-    //                         <div key={id}>
-    //                             <p>{title}</p>
-    //                         </div>
-    //                     )
-    //                 })
-    //             }
-    //             }
-    //         </Query>
-    //     )
-    // }
+
 
     renderSongs(){
-        if(isEmpty(this.props.data)) return <div>No data fetch</div>;
-        const { loading, error } = this.props.data;
+        if(isEmpty(this.props.query)) return <div>No data fetch</div>;
+        const { loading, error } = this.props.query;
         if(loading) return <p>Loading...</p>;
         if(error) return <p>Error :(</p>;
 
-        return this.props.data.songs.map(({title, id}) => {
+        return this.props.query.songs.map(({title, id}) => {
             return (
                 <li key={id}
                     className='collection-item'
                 >
-                    {title}
+                    <Link to={`${this.props.match.url}song/${id}`}
+                          className='collection-item_link'
+                    >
+                        {title}
+                        </Link>
+                    <a className="btn-floating btn-small waves-effect waves-light blue right"
+                       onClick={() => this.songToDelete(id)}
+                    >
+                        <i className="material-icons">delete</i>
+                    </a>
+
                 </li>
             )
         })
     }
 
+
+    songToDelete = (id) => {
+        console.log('song to delete', id);
+        this.props.deleteSong({
+            variables: {
+                id
+            }
+        })
+            .then(() => {
+                this.props.query.refetch()
+            })
+            .catch((e) => console.log(e))
+
+    };
+
     render(){
-        // console.log(this.props);
+        console.log(this.props);
         return(
             <div className='container'>
                 <h4>
@@ -65,7 +65,7 @@ class SongList extends Component{
                         {this.renderSongs()}
                     </ul>
                     <Link
-                        className="btn-floating btn-large waves-effect waves-light red"
+                        className="btn-floating btn-medium waves-effect waves-light red right"
                         to='/song/new'
                     >
                         <i className="material-icons">add</i>
@@ -77,13 +77,12 @@ class SongList extends Component{
     }
 }
 
-const query = gql`
-    {
-        songs{
-            title
-            id
-            }
-    } 
-`;
 
-export default graphql(query)(SongList);
+export default compose(
+    graphql(deleteSong, {
+        name: 'deleteSong'
+    }),
+    graphql(query, {
+        name: 'query'
+    })
+)(SongList);
