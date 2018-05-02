@@ -9,3 +9,23 @@
 .lyrics-text{
     margin-left: 30px;
 }
+
+span.song-details_likes{
+    display: block;
+    padding-top: 2px;
+}
+
+.song-details_flex-container{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.song-details_icon-container{
+    color: #1e88e5;
+    cursor: pointer;
+}
+
+.material-icons:hover{
+    color: #64b5f6;
+}

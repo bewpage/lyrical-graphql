@@ -14,7 +14,9 @@ import './style/style.css';
 
 const client = new ApolloClient({
     link: new HttpLink(),
-    cache: new InMemoryCache(),
+    cache: new InMemoryCache({
+        dataIdFromObject: o => o.id
+    }),
 });
 
 

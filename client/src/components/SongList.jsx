@@ -16,7 +16,7 @@ class SongList extends Component{
         if(loading) return <p>Loading...</p>;
         if(error) return <p>Error :(</p>;
 
-        return this.props.query.songs.map(({title, id}) => {
+        return this.props.query.songs.map(({ title, id }) => {
             return (
                 <li key={id}
                     className='collection-item'
